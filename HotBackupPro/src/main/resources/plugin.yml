@@ -1,0 +1,7 @@
+name: HotBackupPro
+description: The most versatile backup plugin for Minecraft.
+author: Michiel Arkema
+version: '${project.version}'
+main: nl.michielarkema.hotbackuppro.HotBackup
+api-version: 1.8
+
