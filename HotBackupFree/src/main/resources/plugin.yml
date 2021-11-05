@@ -3,5 +3,10 @@ description: The free version of the most versatile backup plugin for Minecraft.
 author: Michiel Arkema
 version: '${project.version}'
 main: nl.michielarkema.hotbackupfree.HotBackup
-api-version: 1.8
+api-version: 1.13
 
+commands:
+  hbu:
+    description: Shows the available commands for this plugin.
+    usage: /hbu or /hbu <argument>
+    permission: hotbackup.use
