@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,6 +17,21 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public final class BackupUtil {
+
+    /**
+     * Converts the localtime to tick count.
+     * @param time
+     * @return The tick count.
+     */
+    public static long getTickCount(LocalTime time) {
+        final int hour = time.getHour();
+        final int minute = time.getMinute();
+        final int second = time.getSecond();
+
+        final long ticks = (hour * 72000) + (minute * 1200) + (second * 20);
+        return ticks;
+    }
+
     public static void BackUp() {
         Thread thread = new Thread(new Runnable() {
             @Override

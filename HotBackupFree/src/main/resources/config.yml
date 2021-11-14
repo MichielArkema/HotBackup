@@ -1,0 +1,15 @@
+automation:
+  enabled: true
+  # This is the time span of when every backup will happen automatically.
+  time-span:
+    hour: 5
+    minute: 30
+    second: 0
+
+backup-path: "backup/"
+target-paths: [
+    "plugins/"
+  ]
+files-blacklist: [
+    "session.lock"
+  ]

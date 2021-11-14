@@ -4,9 +4,29 @@ author: Michiel Arkema
 version: '${project.version}'
 main: nl.michielarkema.hotbackupfree.HotBackup
 api-version: 1.13
+prefix: HotBackupFree
 
 commands:
   hbu:
     description: Shows the available commands for this plugin.
     usage: /hbu or /hbu <argument>
     permission: hotbackup.use
+
+permissions:
+  hotbackup.use:
+    description: Access to the /hbu command.
+  hotbackup.start:
+    description: Access to starting a new backup.
+  hotbackup.status:
+    description: Access to seeing the status of the backup.
+  hotbackup.list:
+    description: Access to seeing and managing the backup list.
+
+  hotbackup.*:
+    description: Wildcard for all the plugin permissions.
+    default: op
+    children:
+      hotbackup.use: true
+      hotbackup.start: true
+      hotbackup.status: true
+      hotbackup.list: true
