@@ -13,14 +13,10 @@ import java.util.List;
 import java.util.Objects;
 
 public final class LocalBackupService {
+
     private final HotBackup plugin;
-    private final FileConfiguration config;
 
-    public Path getBackupStoragePath() {
-        return backupStoragePath;
-    }
-
-    public final Path backupStoragePath;
+    private final Path backupStoragePath;
 
     public final List<String> backupPaths;
 
@@ -30,16 +26,18 @@ public final class LocalBackupService {
 
     public CommandSender commandSender;
 
+    public Path getBackupStoragePath() {
+        return backupStoragePath;
+    }
+
     public LocalBackupService(CommandSender commandSender) {
         this.commandSender = commandSender;
         this.plugin = HotBackup.getInstance();
-        this.config = this.plugin.getConfig();
+        FileConfiguration config = this.plugin.getConfig();
 
-        this.backupStoragePath = Paths.get(Objects.requireNonNull(this.config.getString("backup-path")));
-        this.backupPaths = this.config.getStringList("target-paths");
-        this.filesBlacklist = this.config.getStringList("files-blacklist");
-
-    //    this.filesBlacklist.add(this.backupStoragePath.toFile().getName());
+        this.backupStoragePath = Paths.get(Objects.requireNonNull(config.getString("backup-path")));
+        this.backupPaths = config.getStringList("target-paths");
+        this.filesBlacklist = config.getStringList("files-blacklist");
     }
 
     public void backUp()

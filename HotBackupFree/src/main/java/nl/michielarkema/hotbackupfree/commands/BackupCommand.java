@@ -1,17 +1,25 @@
 package nl.michielarkema.hotbackupfree.commands;
 
-import com.coloredcarrot.api.sidebar.Sidebar;
-import com.coloredcarrot.api.sidebar.SidebarString;
-import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
+import nl.michielarkema.hotbackupfree.BackupUtil;
 import nl.michielarkema.hotbackupfree.HotBackup;
 import nl.michielarkema.hotbackupfree.services.LocalBackupService;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.*;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public final class BackupCommand implements CommandExecutor {
 
@@ -28,33 +36,62 @@ public final class BackupCommand implements CommandExecutor {
     private void handleArguments(CommandSender sender, String[] args) {
         switch (args[0]) {
             case "start":
-                this.startCommand(sender, args);
+                this.startCommand(sender);
                 break;
             case "status":
                 this.statusCommand(sender);
                 break;
             case "list":
-                //Todo: Show inventory screen with a list of backup files.
-                Player player = (Player) sender;
-
-                TextComponent txt = new TextComponent(ChatColor.YELLOW + "Hover of an item to see its information.");
-                player.spigot()
-                        .sendMessage(ChatMessageType.ACTION_BAR, txt);
+                try {
+                    this.listCommand(sender);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 break;
         }
     }
 
-    private void startCommand(CommandSender sender, String[] args) {
+    private void startCommand(CommandSender sender) {
+        if(HotBackup.isBackupRunning) {
+            sender.sendMessage(ChatColor.RED + "There is already a backup in process!");
+            return;
+        }
         LocalBackupService backupService = new LocalBackupService(sender);
         backupService.backUp();
     }
 
     private void statusCommand(CommandSender sender) {
-        SidebarString[] lines = new SidebarString[] {
-                new SidebarString("Version: 1.0.0-TESTING"),
-        };
-        Sidebar sideBar = new Sidebar(ChatColor.GOLD + "Backup Status", HotBackup.getInstance(), 60, lines);
-        sideBar.showTo((Player) sender);
+
+    }
+
+    private void listCommand(CommandSender sender) throws IOException {
+
+        List<Path> files = Files.walk(
+                Paths.get(Objects.requireNonNull(HotBackup.getInstance()
+                        .getConfig().getString("backup-path"))))
+                .filter(Files::isRegularFile)
+                .collect(Collectors.toList());
+
+        sender.sendMessage(ChatColor.GRAY + "----------------------------------------");
+        sender.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "BACKUP LIST");
+        sender.sendMessage("");
+
+        int number = 0;
+        for (Path path : files) {
+            number++;
+            File file = path.toFile();
+
+            TextComponent text = new TextComponent(number + ". " + ChatColor.GOLD + file.getName());
+            text.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                    new Text(HotBackup.translateColor(String.format("&bSize: %s\n&eCreated at: %s",
+                            BackupUtil.getFileSize(file.length()),
+                            file.getName().replace("_backup.zip", "")
+                    )))));
+            sender.spigot().sendMessage(text);
+        }
+        sender.sendMessage("");
+        sender.sendMessage(ChatColor.LIGHT_PURPLE + "Hover over the items to see their information.");
+        sender.sendMessage(ChatColor.GRAY + "----------------------------------------");
     }
 
     private void showHelp(CommandSender sender) {

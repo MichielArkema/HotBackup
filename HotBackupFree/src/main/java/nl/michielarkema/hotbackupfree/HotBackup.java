@@ -1,6 +1,7 @@
 package nl.michielarkema.hotbackupfree;
 
 import nl.michielarkema.hotbackupfree.commands.BackupCommand;
+import nl.michielarkema.hotbackupfree.services.LocalBackupService;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
@@ -9,6 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 
 public final class HotBackup extends JavaPlugin {
@@ -16,6 +18,7 @@ public final class HotBackup extends JavaPlugin {
     private static HotBackup instance;
 
     public static final int MAX_BACKUP_FILES = 5;
+    public static boolean isBackupRunning = false;
 
     private ConsoleCommandSender consoleSender;
 
@@ -41,7 +44,7 @@ public final class HotBackup extends JavaPlugin {
         this.consoleSender.sendMessage(ChatColor.GOLD + "Consider upgrading to HotBackupPro here: https://mc-market/resources/cool");
 
         this.saveDefaultConfig();
-        this.getCommand("hbu").setExecutor(new BackupCommand());
+        Objects.requireNonNull(this.getCommand("hbu")).setExecutor(new BackupCommand());
         this.startBackupAutomation();
 
         this.consoleSender.sendMessage(ChatColor.AQUA + "------------------------------------------------");
@@ -49,14 +52,14 @@ public final class HotBackup extends JavaPlugin {
 
     private void startBackupAutomation() {
         final ConfigurationSection automationSection = this.getConfig().getConfigurationSection("automation");
-        final boolean automation = automationSection.getBoolean("enabled");
+        final boolean automation = Objects.requireNonNull(automationSection).getBoolean("enabled");
         this.consoleSender.sendMessage("Backup automation: " + automation);
 
         if(!automation) return;
 
         final ConfigurationSection timeSpanSection = automationSection.getConfigurationSection("time-span");
 
-        final int hour = timeSpanSection.getInt("hour");
+        final int hour = Objects.requireNonNull(timeSpanSection).getInt("hour");
         final int minute = timeSpanSection.getInt("minute");
         final int seconds = timeSpanSection.getInt("second");
 
@@ -70,6 +73,7 @@ public final class HotBackup extends JavaPlugin {
 
         final long ticks = BackupUtil.getTickCount(LocalTime.of(hour, minute, seconds));
         this.consoleSender.sendMessage("Ticks: " + ticks);
+
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
             Bukkit.getLogger().info("Backup timer executed :)");
         }, ticks, ticks);
