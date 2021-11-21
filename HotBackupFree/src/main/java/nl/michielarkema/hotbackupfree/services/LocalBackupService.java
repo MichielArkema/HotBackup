@@ -40,7 +40,7 @@ public final class LocalBackupService {
         this.filesBlacklist = config.getStringList("files-blacklist");
     }
 
-    public void backUp()
+    public void startBackup()
     {
         LocalBackupTask backupTask = new LocalBackupTask(this);
         backupTask.runTaskAsynchronously(this.plugin);

@@ -17,6 +17,11 @@ public final class BackupUtil {
         return (hour * 72000) + (minute * 1200) + (second * 20);
     }
 
+    /**
+     * Gets the file size in message format.
+     * @param bytes the file size in bytes.
+     * @return The message format of the file size.
+     */
     public static String getFileSize(long bytes) {
         String message = "";
 

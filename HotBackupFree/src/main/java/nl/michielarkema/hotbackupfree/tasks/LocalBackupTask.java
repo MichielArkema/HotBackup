@@ -31,6 +31,7 @@ public class LocalBackupTask extends BukkitRunnable {
         HotBackup.isBackupRunning = true;
         Stopwatch sw = Stopwatch.createStarted();
         this.sendSenderMessage(ChatColor.YELLOW + "Starting backup...");
+        this.sendSenderMessage(ChatColor.RED + "Do not shutdown the server!");
         this.collectFiles();
         this.startBackup();
 

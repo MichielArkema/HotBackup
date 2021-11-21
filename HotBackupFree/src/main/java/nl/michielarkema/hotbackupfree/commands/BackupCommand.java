@@ -6,6 +6,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import nl.michielarkema.hotbackupfree.BackupUtil;
 import nl.michielarkema.hotbackupfree.HotBackup;
+import nl.michielarkema.hotbackupfree.services.BackupAutomationService;
 import nl.michielarkema.hotbackupfree.services.LocalBackupService;
 import org.bukkit.*;
 import org.bukkit.command.Command;
@@ -57,11 +58,21 @@ public final class BackupCommand implements CommandExecutor {
             return;
         }
         LocalBackupService backupService = new LocalBackupService(sender);
-        backupService.backUp();
+        backupService.startBackup();
     }
 
     private void statusCommand(CommandSender sender) {
+        sender.sendMessage(ChatColor.GRAY + "----------------------------------------");
 
+        sender.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "BACKUP STATUS");
+        sender.sendMessage("");
+        BackupAutomationService backupAutomationService = HotBackup.getInstance().backupAutomationService;
+
+        final String scheduledMessage = backupAutomationService.isAutomationEnabled()
+                ? backupAutomationService.getNextScheduledBackupDate()
+                : ChatColor.RED + "Disabled";
+        sender.sendMessage(ChatColor.GREEN + "Next scheduled backup: " + scheduledMessage);
+        sender.sendMessage(ChatColor.GRAY + "----------------------------------------");
     }
 
     private void listCommand(CommandSender sender) throws IOException {
@@ -75,6 +86,10 @@ public final class BackupCommand implements CommandExecutor {
         sender.sendMessage(ChatColor.GRAY + "----------------------------------------");
         sender.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "BACKUP LIST");
         sender.sendMessage("");
+
+        if(files.size() == 0) {
+            sender.sendMessage(ChatColor.RED + "There are no backup files!");
+        }
 
         int number = 0;
         for (Path path : files) {
