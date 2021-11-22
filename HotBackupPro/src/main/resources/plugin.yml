@@ -3,5 +3,16 @@ description: The most versatile backup plugin for Minecraft.
 author: Michiel Arkema
 version: '${project.version}'
 main: nl.michielarkema.hotbackuppro.HotBackup
-api-version: 1.8
+api-version: 1.13
+prefix: HotBackupPro
 
+commands:
+  hbu:
+    description: Shows the available commands for this plugin.
+    usage: /hbu or /hbu <argument>
+    permission: hotbackup.use
+
+permissions:
+  hotbackup.use:
+    description: Access to the /hbu command.
+    default: op
