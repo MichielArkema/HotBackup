@@ -1,4 +1,8 @@
+#The path to where the backup files will be stored in.
+backup-path: "backup/"
+
 automation:
+  #Enable or disable the automatic backup system.
   enabled: true
   # This is the time span of when every backup will happen automatically.
   time-span:
@@ -6,10 +10,16 @@ automation:
     minute: 30
     second: 0
 
-backup-path: "backup/"
+#The list of paths that will be collected for backup.
 target-paths: [
-    "plugins/"
+    "plugins/",
+    "world/",
+    "usercache.json",
+    "banned-ips.json",
+    "banned-players.json"
   ]
+
+#List of paths that should be avoided. (Please do not remove session.lock)
 files-blacklist: [
     "session.lock"
   ]

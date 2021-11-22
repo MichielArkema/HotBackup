@@ -1,6 +1,11 @@
 package nl.michielarkema.hotbackupfree;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.time.LocalTime;
+import java.util.Arrays;
 
 public final class BackupUtil {
 
@@ -34,5 +39,33 @@ public final class BackupUtil {
             message = (bytes / (1024 * 1024)) + " mb";
         }
         return message;
+    }
+
+    /**
+     * Sorts the files based on their creation date.
+     * @param files The list of files.
+     */
+    public static void sortFilesByDateCreated (File[] files) {
+        Arrays.sort(files, (f1, f2) -> {
+            long l1 = getFileCreationEpoch(f1);
+            long l2 = getFileCreationEpoch(f2);
+            return Long.compare(l1, l2);
+        });
+    }
+
+    /**
+     * Gets the file creation date as epoch.
+     * @param file the file.
+     * @return File creation date epoch
+     */
+    public static long getFileCreationEpoch (File file) {
+        try {
+            BasicFileAttributes attr = Files.readAttributes(file.toPath(),
+                    BasicFileAttributes.class);
+            return attr.creationTime()
+                    .toInstant().toEpochMilli();
+        } catch (IOException e) {
+            throw new RuntimeException(file.getAbsolutePath(), e);
+        }
     }
 }

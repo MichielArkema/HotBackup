@@ -2,6 +2,7 @@ package nl.michielarkema.hotbackupfree.tasks;
 
 import com.google.common.base.Stopwatch;
 import net.md_5.bungee.api.ChatColor;
+import nl.michielarkema.hotbackupfree.BackupUtil;
 import nl.michielarkema.hotbackupfree.HotBackup;
 import nl.michielarkema.hotbackupfree.services.LocalBackupService;
 import org.bukkit.Bukkit;
@@ -32,6 +33,7 @@ public class LocalBackupTask extends BukkitRunnable {
         Stopwatch sw = Stopwatch.createStarted();
         this.sendSenderMessage(ChatColor.YELLOW + "Starting backup...");
         this.sendSenderMessage(ChatColor.RED + "Do not shutdown the server!");
+        this.checkBackupLimitation();
         this.collectFiles();
         this.startBackup();
 
@@ -39,6 +41,17 @@ public class LocalBackupTask extends BukkitRunnable {
         final long seconds = sw.elapsed(TimeUnit.SECONDS);
         this.sendSenderMessage(ChatColor.LIGHT_PURPLE + "The backup process took " + seconds + " seconds.");
         HotBackup.isBackupRunning = false;
+    }
+
+    private void checkBackupLimitation() {
+        Path storagePath = this.localBackupService.getBackupStoragePath();
+        File[] files = storagePath.toFile().listFiles();
+        if(files == null) return;
+        if(files.length < HotBackup.MAX_BACKUP_FILES)
+            return;
+
+        BackupUtil.sortFilesByDateCreated(files);
+        files[0].delete();
     }
 
     private void collectFiles() {
@@ -67,14 +80,6 @@ public class LocalBackupTask extends BukkitRunnable {
 
         String zipFileName = dtf.format(now) + "_backup.zip";
         Path storagePath = this.localBackupService.getBackupStoragePath();
-
-        if(!storagePath.toFile().exists()) {
-            try {
-                Files.createDirectory(storagePath);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
 
         File sourceFile = new File(Paths.get(storagePath.toFile().getPath(), zipFileName).toString());
 

@@ -7,6 +7,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 public final class HotBackup extends JavaPlugin {
@@ -46,7 +51,20 @@ public final class HotBackup extends JavaPlugin {
 
         Objects.requireNonNull(this.getCommand("hbu")).setExecutor(new BackupCommand());
         this.backupAutomationService = new BackupAutomationService();
+        this.createBackupDirectory();
         this.consoleSender.sendMessage(ChatColor.AQUA + "------------------------------------------------");
+    }
+
+    private void createBackupDirectory() {
+        Path storagePath = Paths.get(Objects.requireNonNull(this.getConfig().getString("backup-path")));
+
+        if(!storagePath.toFile().exists()) {
+            try {
+                Files.createDirectory(storagePath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
