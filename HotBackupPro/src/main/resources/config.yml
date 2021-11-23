@@ -16,7 +16,6 @@ services:
     backup-path: "backup/"
   google-drive:
 
-
 #The list of paths that will be collected for backup.
 target-paths: [
     "plugins/",
@@ -26,7 +25,7 @@ target-paths: [
     "banned-players.json"
   ]
 
-#List of files/folders that should be avoided. (Please do not remove session.lock)
+#List of files/folders that should be avoided. (Please do not remove the session.lock)
 files-blacklist: [
     "session.lock"
   ]
