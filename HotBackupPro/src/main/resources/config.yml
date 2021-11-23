@@ -1,5 +1,5 @@
-#The path to where the backup files will be stored in.
-backup-path: "backup/"
+#The path to where the local backup files will be stored in.
+
 
 automation:
   #Enable or disable the automatic backup system.
@@ -10,6 +10,13 @@ automation:
     minute: 30
     second: 0
 
+services:
+  selected: "local",
+  local:
+    backup-path: "backup/"
+  google-drive:
+
+
 #The list of paths that will be collected for backup.
 target-paths: [
     "plugins/",
@@ -19,7 +26,7 @@ target-paths: [
     "banned-players.json"
   ]
 
-#List of paths that should be avoided. (Please do not remove session.lock)
+#List of files/folders that should be avoided. (Please do not remove session.lock)
 files-blacklist: [
     "session.lock"
   ]

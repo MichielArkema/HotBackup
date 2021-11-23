@@ -20,7 +20,6 @@ public final class HotBackup extends JavaPlugin {
 
     public static final int MAX_BACKUP_FILES = 5;
     public static boolean isBackupRunning = false;
-    public static Configuration config;
 
     private ConsoleCommandSender consoleSender;
     public BackupAutomationService backupAutomationService;
