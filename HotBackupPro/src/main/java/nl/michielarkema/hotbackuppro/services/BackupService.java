@@ -12,7 +12,7 @@ public abstract class BackupService {
 
     protected final List<String> backupPaths;
     protected final List<String> filesBlacklist;
-    protected final List<String> collectedFiles = new ArrayList<>();
+
 
     protected BackupService() {
         this.plugin = HotBackup.getInstance();
