@@ -1,10 +1,14 @@
 package nl.michielarkema.hotbackuppro;
 
+import org.bukkit.configuration.Configuration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class HotBackup extends JavaPlugin {
 
     private static HotBackup instance;
+
+    public static Configuration config;
+
     public static HotBackup getInstance() {
         return instance;
     }
@@ -14,12 +18,10 @@ public final class HotBackup extends JavaPlugin {
     }
     @Override
     public void onEnable() {
-        // Plugin startup logic
-
+        config = this.getConfig();
     }
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
     }
 }
