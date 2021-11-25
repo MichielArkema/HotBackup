@@ -74,12 +74,9 @@ public abstract class BackupTask extends BukkitRunnable {
         this.zipFile = new File(Paths.get(storagePath.toString(), zipFileName).toString());
 
         try {
-            this.sendSenderMessage(ChatColor.GREEN + "Backing up collected files...");
+            this.backupService.sendMessage(ChatColor.GREEN + "Backing up collected files...");
             ZipOutputStream out = new ZipOutputStream(new FileOutputStream(this.zipFile));
             for (File file : this.collectedFiles) {
-
-                if(file.getParent().equals(this.backupService.getBackupStoragePath().toString()))
-                    continue;
 
                 String fileName = file.getPath();
                 byte[] buffer = Files.readAllBytes(file.toPath());
@@ -92,7 +89,7 @@ public abstract class BackupTask extends BukkitRunnable {
                 out.closeEntry();
             }
             out.close();
-            this.sendSenderMessage(ChatColor.GREEN  + "Backup successfully finished.");
+            this.backupService.sendMessage(ChatColor.GREEN  + "Backup successfully finished.");
         }
         catch (IOException e) {
             e.printStackTrace();
